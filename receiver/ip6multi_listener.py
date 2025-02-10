@@ -1,7 +1,7 @@
 import socket
 import struct
 
-MULTICAST_GROUP = 'ff80::1'
+MULTICAST_GROUP = 'ff02::1'
 PORT = 6001
 sock = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
 sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
