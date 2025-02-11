@@ -54,6 +54,15 @@ def handle_ipv6_multicast():
         data, addr = sock.recvfrom(1024)
         print(f"[IPv6 Multicast] From {addr}: {data.decode()}")
 
+def handle_ipv6_anycast():
+    host, port = '::', 6002
+    with socket.socket(socket.AF_INET6, socket.SOCK_DGRAM) as s:
+        s.bind((host, port))
+        print(f"Listening for IPv6 Anycast messages on {host}:{port}...")
+        while True:
+            data, addr = s.recvfrom(1024)
+            print(f"[IPv6 Anycast] From {addr}: {data.decode()}")
+
 # Run all listeners in separate threads
 threads = [
     threading.Thread(target=handle_ipv4_unicast),
@@ -61,11 +70,17 @@ threads = [
     threading.Thread(target=handle_ipv4_multicast),
     threading.Thread(target=handle_ipv6_unicast),
     threading.Thread(target=handle_ipv6_multicast),
+    threading.Thread(target=handle_ipv6_anycast),
 ]
 
 for thread in threads:
     thread.daemon = True
     thread.start()
+
+# Ensure all threads have started before printing the message
+for thread in threads:
+    while not thread.is_alive():
+        pass
 
 print("All listeners are running. Press Ctrl+C to stop.")
 
